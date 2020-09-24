@@ -1,4 +1,4 @@
-# Unity-ARFoundation-echoAR-demo-Car-Racing
+# Unity-ARFoundation-echoAR-demo-Reverse-Pictionary
 An AR Reverse Pictionary app demo build with echoAR
 
 ## Register
