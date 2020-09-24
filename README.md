@@ -1,5 +1,5 @@
 # Unity-ARFoundation-echoAR-demo-Car-Racing
-An AR Car Racing AR app demo build with echoAR
+An AR Reverse Pictionary app demo build with echoAR
 
 ## Register
 If you don't have an echoAR API key yet, make sure to register for FREE at [echoAR](https://console.echoar.xyz/#/auth/register).
