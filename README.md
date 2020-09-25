@@ -1,5 +1,5 @@
 # Unity-ARFoundation-echoAR-demo-Reverse-Pictionary
-An AR Reverse Pictionary app demo build with echoAR
+An AR Reverse Pictionary app demo built with echoAR
 
 ## Register
 If you don't have an echoAR API key yet, make sure to register for FREE at [echoAR](https://console.echoar.xyz/#/auth/register).
