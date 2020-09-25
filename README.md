@@ -1,5 +1,9 @@
 # Unity-ARFoundation-echoAR-demo-Reverse-Pictionary
-An AR Reverse Pictionary app demo built with echoAR
+An AR Reverse Pictionary app demo built with echoAR.
+
+The display tells you what to draw (for example, "Draw a boat!" and a time counter ticking down from 20 seconds starts.  
+The controls to move the pen are the four buttons on your screen, which are to turn left/right and move forward/back. You should see a black line be drawn as you move forward/back. 
+When the time runs out, the board will clear, and you will be given a new item/goal to draw, and the timer will be reset. Hand the device to the next person, and good luck to them as they try to draw the object before the time runs out!
 
 ## Register
 If you don't have an echoAR API key yet, make sure to register for FREE at [echoAR](https://console.echoar.xyz/#/auth/register).
