@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
+using System;
 
 /*
  * CustomBehavior script is run for each model in the echoAR console whenever an echoAR object is instantiated
@@ -36,10 +38,8 @@ public class CustomBehaviour : MonoBehaviour
     public System.Random rnd = new System.Random(); //Creates a random seed
 
     public string currentWord = "";
-    public string[] drawingGoals = new string[]
-    { 
-        "boat", "person", "tree", "house", "heart", "bear", "guitar", "robot", "flower", "dog", "duck" 
-    };
+    public List<string> drawingGoals = new List<string>();
+    public List<int> drawingTimes = new List<int>();
 
     GameObject statusText;
     TextMesh statusTextMesh;
@@ -74,21 +74,9 @@ public class CustomBehaviour : MonoBehaviour
         entry.getAdditionalData().TryGetValue("type", out type); //Read the "type" metadata
 
         previousTime = (int)Time.time;
-        timeDisplay = 19;
 
         if(type == "pen")
         {
-
-            // Initialize the display text
-            statusText = new GameObject();
-            statusText.name = "status";
-            statusText.transform.position = new Vector3(1, 3, 8.5f);
-            statusTextMesh = statusText.AddComponent<TextMesh>();
-            currentWord = drawingGoals[rnd.Next(0, drawingGoals.Length)]; //Choose a random word from list
-            statusTextMesh.text = "Draw a " + currentWord + "!\n" + timeDisplay.ToString();
-            statusTextMesh.fontSize = 20;
-            statusTextMesh.anchor = TextAnchor.MiddleCenter;
-            statusTextMesh.alignment = TextAlignment.Center;
             /*
              * Adds a dummy parent between this.gameObject and echoAR root object
              * i.e. 
@@ -118,7 +106,38 @@ public class CustomBehaviour : MonoBehaviour
         }
         else
         {
-            //If this.gameObject is the track, reset its local position when it is instantiated
+            string[] keysToBeFiltered = new string[]
+            {
+                "qrWebXRStorageID", "shortURL", "qrARjsStorageFilename", "qrARjsTargetStorageFilename", 
+                "qrARjsMarkerStorageFilename", "qrARjsTargetStorageID", "scale", 
+                "qrARjsStorageID", "qrWebARStorageID", "accessHistory", "createdAt",
+                "qrWebXRStorageFilename", "x", "y", "z", "lastAccessed", "qrARjsMarkerStorageID",
+                "qrWebARStorageFrame", "qrWebARStorageFilename", "type",
+            };
+            var myDict = entry.getAdditionalData().Where(p => !keysToBeFiltered.Contains(p.Key)).ToDictionary(p => p.Key, p => p.Value);
+            
+            string toString = "";
+            foreach (string key in myDict.Keys)
+            {   
+                drawingGoals.Add(key);
+                drawingTimes.Add(Int16.Parse(myDict[key]));
+                toString += key + "=" + myDict[key] + "\n";
+            }
+
+            // Initialize the display text
+            statusText = new GameObject();
+            statusText.name = "status";
+            statusText.transform.position = new Vector3(1, 3, 8.5f);
+            statusTextMesh = statusText.AddComponent<TextMesh>();
+            currentWord = drawingGoals[rnd.Next(0, drawingGoals.Count)]; //Choose a random word from list
+            timeDisplay = drawingTimes[drawingGoals.IndexOf(currentWord)];
+            statusTextMesh.text = "Draw a " + currentWord + "!\n" + timeDisplay.ToString();
+            statusTextMesh.fontSize = 20;
+            statusTextMesh.anchor = TextAnchor.MiddleCenter;
+            statusTextMesh.alignment = TextAlignment.Center;
+
+
+            //If this.gameObject is the notepad, reset its local position when it is instantiated
             this.gameObject.transform.localPosition = Vector3.zero;
             this.gameObject.transform.localRotation = Quaternion.identity;
         }
@@ -138,6 +157,7 @@ public class CustomBehaviour : MonoBehaviour
          * Else:
          *     Add MeshCollider that is not convex so that we get all concave contours of the track
          */
+
         if (Time.time - previousTime >= 1)
         {
             previousTime = (int)Time.time;
@@ -145,11 +165,11 @@ public class CustomBehaviour : MonoBehaviour
             {
                 timeDisplay -= 1;
             } else {
-                timeDisplay = 19;
                 //Choose new word from list
-                currentWord = drawingGoals[rnd.Next(0, drawingGoals.Length)];
+                currentWord = drawingGoals[rnd.Next(0, drawingGoals.Count)];
+                timeDisplay = drawingTimes[drawingGoals.IndexOf(currentWord)];
                 //Clear the trail once time is up
-                GameObject pen = GameObject.Find("Convertible.glb");
+                GameObject pen = GameObject.Find("Ball.glb");
                 pen.GetComponent<TrailRenderer>().Clear();
                 GameObject rb = GameObject.Find("Reset Button");
                 rb.GetComponent<Button>().onClick.Invoke();
@@ -159,6 +179,7 @@ public class CustomBehaviour : MonoBehaviour
             //Update time counter
             GameObject statusText = GameObject.Find("status");
             statusTextMesh = statusText.GetComponent<TextMesh>();
+            Debug.Log(currentWord[0]);
             statusTextMesh.text = "Draw a " + currentWord + "!\n" + timeDisplay.ToString();
             statusTextMesh.fontSize = 20;
             statusTextMesh.anchor = TextAnchor.MiddleCenter;
@@ -168,7 +189,8 @@ public class CustomBehaviour : MonoBehaviour
 
         if (type == "pen")
         {
-
+    
+            // In case the notepad object keeps falling through, uncomment this:
             // GameObject eAR = GameObject.Find("echoAR");
             // eAR.GetComponent<Rigidbody>().isKinematic = true;
 
