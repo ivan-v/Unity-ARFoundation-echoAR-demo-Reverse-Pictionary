@@ -6,6 +6,10 @@ The display tells you what to draw (for example, "Draw a boat!" and a time count
 The controls to move the pen are the four buttons on your screen, which are to turn left/right and move forward/back. You should see a black line be drawn as you move forward/back. 
 When the time runs out, the board will clear, and you will be given a new item/goal to draw, and the timer will be reset. Hand the device to the next person, and good luck to them as they try to draw the object before the time runs out!
 
+## Changing the metadata in echoAR
+You can add or delete the "drawing goals" and their time (in seconds) in the metadata for the notepad object.
+To do so, simply add an entry with the key being the drawing goal (e.g., "house"), and its value being the time allocated to draw it before the timer runs out (e.g., "20"). 
+
 ## Register
 If you don't have an echoAR API key yet, make sure to register for FREE at [echoAR](https://console.echoar.xyz/#/auth/register).
 
